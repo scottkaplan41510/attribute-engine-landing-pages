@@ -1,0 +1,348 @@
+# Attribute definitions for this site. Edit freely, no code changes needed.
+#   computed_by: code   -> measured in Python
+#   computed_by: jev    -> Jev answers from the page copy
+#   computed_by: vision -> a vision model answers from the top-of-page screenshot
+# Neither model ever sees a metric. Tagging runs before metrics exist.
+
+settings:
+  jev_provider: openrouter
+  openrouter_model: typesafe/jev-1.13
+  model: typesafe-ai/jev
+  provider_order: [typesafe-ai, digitalocean]
+  low_confidence: 0.6
+  concurrency: 5
+  max_copy_chars: 12000
+  vision_model: anthropic/claude-sonnet-5
+
+cta_wordings:
+  get_started: "get started"
+  book_a_demo: "book a demo|request a demo"
+  request_access: "request access|request invitation"
+cta_patterns: "get started|book a demo|request access|request invitation|request a demo|sign up|start free|try "
+
+attributes:
+  - name: word_count
+    title: Word count
+    group: Words
+    computed_by: code
+    type: number
+    question: How many words are on the page?
+  - name: reading_grade
+    title: Reading level
+    group: Words
+    computed_by: code
+    type: number
+    question: What school grade does the copy read at?
+  - name: cta_count
+    title: How many CTAs
+    group: CTA
+    computed_by: code
+    type: number
+    question: How many calls to action are on the page?
+  - name: number_count
+    title: Numbers in the copy
+    group: Words
+    computed_by: code
+    type: number
+    question: How many numbers appear in the copy?
+
+  - name: opening_framing
+    title: Opening angle
+    group: Words
+    default: true
+    computed_by: jev
+    type: choice
+    question: What does the page lead with in its opening lines?
+    options:
+      problem: a pain point, risk or frustration the reader has
+      outcome: the result the reader gets
+      product: what the product is or does, or a category label
+  - name: claim_type
+    title: Main claim
+    group: Words
+    computed_by: jev
+    type: choice
+    question: What is the page's main claim?
+    options:
+      category: names a new or better category, such as an operating system or platform
+      outcome: promises a specific result for the reader
+      capability: describes features and what the product can do
+  - name: audience
+    title: Audience
+    group: Words
+    computed_by: jev
+    type: choice
+    question: Who is the page addressed to?
+    options:
+      specific_role: one named role or job title
+      revenue_teams: revenue or GTM teams broadly
+      general: no specific audience
+  - name: proof_type
+    title: Strongest proof type
+    group: Proof
+    default: true
+    computed_by: jev
+    type: choice
+    question: What is the strongest proof on the page?
+    options:
+      customer_quote: a named customer speaking
+      metric: a specific number or result
+      logos_or_names: customer or investor names without a quote
+      none: no proof
+  - name: tone
+    title: Tone
+    group: Words
+    computed_by: jev
+    type: choice
+    question: What best describes the tone?
+    options:
+      plain: direct and matter of fact
+      bold: confident, punchy, high energy
+      technical: detailed and precise
+
+  - name: hero_style
+    title: Hero style
+    group: Visuals
+    default: true
+    computed_by: vision
+    type: choice
+    question: What dominates the top of the page?
+    options:
+      product_ui: screenshots or mockups of the product
+      people: photos of people
+      abstract: abstract art or illustration
+      text_only: mostly text on a plain background
+  - name: cta_prominence
+    title: CTA prominence
+    group: CTA
+    default: true
+    computed_by: vision
+    type: choice
+    question: How prominent is the main call to action?
+    options:
+      high: large or high-contrast, and the eye goes to it quickly
+      medium: visible but competes with other elements
+      low: small or easy to miss
+      none: no call to action visible
+  - name: visual_density
+    title: Visual density
+    group: Visuals
+    computed_by: vision
+    type: choice
+    question: How dense is the top of the page?
+    options:
+      sparse: few elements, lots of space
+      balanced: a moderate amount of content
+      dense: many elements competing
+  - name: proof_in_view
+    title: Proof visible without scrolling
+    group: Proof
+    computed_by: vision
+    type: choice
+    question: Is customer proof, such as logos or quotes, visible in this screenshot?
+    options:
+      "yes": visible
+      "no": not visible
+
+  # Measured free from what capture already saved. "label" = a choice set by code.
+  - name: headline_length
+    title: Headline length
+    group: Words
+    computed_by: code
+    type: number
+    question: How many words are in the headline?
+  - name: image_count
+    title: Number of images
+    group: Visuals
+    computed_by: code
+    type: number
+    question: How many images are in the page's code? Icons are skipped.
+  - name: video_count
+    title: Number of videos
+    group: Visuals
+    computed_by: code
+    type: number
+    question: How many videos are in the page's code?
+  - name: section_count
+    title: Number of sections
+    group: Layout
+    computed_by: code
+    type: number
+    question: How many sections does the page have?
+  - name: page_length
+    title: Page length
+    group: Layout
+    computed_by: code
+    type: number
+    question: How many screens long is the page?
+  - name: video_on_page
+    title: Video on page
+    group: Visuals
+    computed_by: label
+    type: choice
+    question: Is there a video, and where does the first one sit?
+    options:
+      none: no video
+      top: in the first third of the page
+      lower: further down
+  - name: primary_color
+    title: Primary color
+    group: Visuals
+    computed_by: label
+    type: choice
+    question: What color covers the most of the page?
+    options:
+      red: red
+      orange: orange
+      yellow: yellow
+      green: green
+      blue: blue
+      purple: purple
+      pink: pink
+      black: black
+      white: white
+      grey: grey
+      mix: no single color clearly leads
+  - name: background
+    title: Light or dark background
+    group: Visuals
+    computed_by: label
+    type: choice
+    question: Is the page mostly light or dark?
+    options:
+      light: mostly light
+      dark: mostly dark
+  - name: cta_wording
+    title: CTA wording
+    group: CTA
+    computed_by: label
+    type: choice
+    question: What does the first call to action say?
+    options:
+      get_started: get started
+      book_a_demo: book or request a demo
+      request_access: request access or an invitation
+      other: other wording
+      none: no call to action
+  - name: form_on_page
+    title: Form on the page
+    group: Layout
+    computed_by: label
+    type: choice
+    question: Is there a form on the page?
+    options:
+      "yes": a form
+      "no": no form
+
+  # Needs a paid model call, so these run in live runs only.
+  - name: sentiment
+    title: Sentiment score
+    group: Words
+    computed_by: jev
+    score_as_number: true
+    live_only: true
+    type: choice
+    question: What is the overall sentiment of the copy?
+    options:
+      positive: upbeat, optimistic, focused on gains
+      neutral: matter of fact
+      negative: focused on pain, risk or loss
+  - name: people_in_images
+    title: People in images
+    group: Visuals
+    computed_by: vision
+    scope: page
+    live_only: true
+    type: choice
+    question: Do photos or images of people appear anywhere on the page?
+    options:
+      "yes": people appear
+      "no": no people
+  - name: product_in_images
+    title: Product in images
+    group: Visuals
+    computed_by: vision
+    scope: page
+    live_only: true
+    type: choice
+    question: Do screenshots or mockups of the product appear anywhere on the page?
+    options:
+      "yes": product appears
+      "no": no product
+  - name: customer_logos
+    title: Customer logos
+    group: Proof
+    computed_by: vision
+    scope: page
+    live_only: true
+    type: choice
+    question: How many customer logos appear on the page?
+    options:
+      none: none
+      few: one to five
+      many: six or more
+  - name: security_badges
+    title: Security or compliance badges
+    group: Proof
+    computed_by: vision
+    scope: page
+    live_only: true
+    type: choice
+    question: Do security or compliance badges appear, such as SOC 2 or GDPR?
+    options:
+      "yes": badges appear
+      "no": no badges
+  - name: cta_color
+    title: CTA color family
+    group: CTA
+    computed_by: label
+    live_only: true
+    type: choice
+    question: What color is the main CTA button?
+    options:
+      red: red
+      orange: orange
+      yellow: yellow
+      green: green
+      blue: blue
+      purple: purple
+      pink: pink
+      black: black
+      white: white
+      grey: grey
+      none: no button found
+  - name: cta_contrast
+    title: CTA contrast
+    group: CTA
+    computed_by: code
+    live_only: true
+    type: number
+    question: How strongly does the main CTA button stand out from what is behind it? 1 is none, 21 is the most.
+
+# Blind discovery: Claude reads the copy, never the metric.
+discovery:
+  model: anthropic/claude-sonnet-5
+  max_attributes: 5
+  sample_size: 60
+  prompt: "You are helping analyze web page copy. Below are {n} pieces of copy.\nYou are only\
+    \ seeing the text. You are not told how any of them performed.\n\nWe already measure these\
+    \ attributes:\n{existing}\n\nPropose up to {max_attributes} NEW attributes that vary across\
+    \ this copy and\nthat a marketer might plausibly expect to affect performance. Rules:\n\
+    - Each attribute is one judgment a reader could make from the text alone.\n- Do not repeat\
+    \ or rephrase an attribute we already measure.\n- Use type \"choice\" (2 to 4 options,\
+    \ always including \"neither\" or \"other\")\n  or type \"boolean\" (yes/no).\n- Give\
+    \ each option a one-line description.\n- Put first the attributes that split the copy\
+    \ into the most even groups.\n\nReturn only YAML, a list in exactly this format:\n- name:\
+    \ snake_case_name\n  type: choice\n  question: ...\n  options:\n    option_a: one-line\
+    \ description\n    neither: one-line description\n  why: one sentence on what varies in\
+    \ the copy\n- name: snake_case_name\n  type: boolean\n  question: ...\n  \"true\": what\
+    \ counts as yes\n  \"false\": what counts as no\n  why: one sentence on what varies in\
+    \ the copy\n\nCopy:\n{copy}\n"
+discovery_chars: 2000
+
+# Word and phrase analysis. Each phrase is its own test, so the bar is strict.
+tokens:
+  min_pages: 5        # on at least this many page versions, and off this many
+  max_share: 0.8      # on more than this share = site-wide nav, not copy
+  top: 15
+  extra_stopwords: [example]   # add your brand name here

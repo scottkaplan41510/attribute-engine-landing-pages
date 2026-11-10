@@ -1,0 +1,32 @@
+/* Your look, in one file. Edit these values to match your brand.
+   The app is dark. Neutrals use the zinc scale, remapped below, so every grey in
+   the app follows it: 50-300 are surfaces and lines, 400-600 muted text, 700-900
+   body text. One accent marks significant results and progress. */
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-sans);
+  --color-accent: #3b82f6;
+  --color-ink: #121214;
+  --color-warning: #e4e4e7;
+  --color-critical: #f87171;
+  --color-zinc-50: #1c1c1f;
+  --color-zinc-100: #1c1c1f;
+  --color-zinc-200: #27272a;
+  --color-zinc-300: #3a3a3e;
+  --color-zinc-400: #9f9fa6;
+  --color-zinc-500: #9f9fa6;
+  --color-zinc-600: #9f9fa6;
+  --color-zinc-700: #e4e4e7;
+  --color-zinc-900: #fafafa;
+}
+
+/* Page background and text. */
+:root {
+  --page-background: #121214;
+  --page-text: #fafafa;
+}
+
+/* The band behind the page title. */
+@utility bg-hero {
+  background-image: linear-gradient(100deg, #1c1c1f 0%, #27272a 100%);
+}

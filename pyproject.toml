@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "attribute-engine-landing-pages"
+version = "0.1.0"
+readme = "README.md"
+license = "MIT"
+description = "Find which attributes of your landing pages line up with conversion."
+requires-python = ">=3.10"
+dependencies = [
+    "attribute-engine @ git+https://github.com/scottkaplan41510/attribute-engine@c51bc9a4238bd02358f8b27927f5d923df9691c6",
+    "pillow",
+    "playwright==1.64.0",
+    "pyyaml",
+    "requests",
+    "python-dotenv",
+    "fastapi",
+    "uvicorn",
+    "google-cloud-storage",
+]
+
+[project.optional-dependencies]
+test = ["pytest", "httpx"]
+
+[project.scripts]
+waf = "website_attribute_finder.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

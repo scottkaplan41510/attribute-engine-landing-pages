@@ -1,0 +1,154 @@
+# ILLUSTRATIVE ONLY. Example Co is a made-up company and these pages do not exist.
+# `waf example example` turns this file into the sample the viewer shows on load:
+# it draws placeholder screenshots, uses the tags below in place of AI tagging,
+# and simulates a conversion rate from simulation.yaml. No API keys, no network.
+#
+# Each page: path, headline, copy, the button and link labels on the page, and the
+# answers an AI tagger would give for the four default visual and copy attributes.
+company: Example Co
+base_url: https://www.example.com
+
+pages:
+  - path: /
+    headline: Scheduling that runs itself
+    copy: |
+      Stop chasing calendars. Example Co books, moves and reminds for you.
+      "We cut no-shows in half in the first month." Dana Lee, operations lead at Northwind Clinics
+      Connect your calendar in two minutes. Free for small teams.
+    ctas: [Get started, Pricing, Log in]
+    tags: {opening_framing: problem, proof_type: customer_quote, hero_style: product_ui, cta_prominence: high}
+
+  - path: /pricing
+    headline: Simple pricing for every team
+    copy: |
+      Example Co is free for up to three people. Teams pay one flat price per seat.
+      Every plan includes reminders, rescheduling and calendar sync.
+      No contracts. Cancel any time.
+    ctas: [Start free, Talk to sales]
+    tags: {opening_framing: product, proof_type: none, hero_style: text_only, cta_prominence: medium}
+
+  - path: /product
+    headline: One calendar for your whole team
+    copy: |
+      Example Co is a scheduling tool that reads every calendar on your team.
+      Booking pages, round robin, reminders and reports in one place.
+      Used by teams at Contoso, Fabrikam and Tailspin.
+    ctas: [Get started, Book a demo, Docs]
+    tags: {opening_framing: product, proof_type: logos_or_names, hero_style: product_ui, cta_prominence: medium}
+
+  - path: /customers
+    headline: Teams that stopped chasing calendars
+    copy: |
+      "Our front desk got four hours a day back." Sam Ortiz, office manager at Bluebird Dental
+      "Every booking lands on the right calendar now." Priya Shah, head of sales at Lakeside Realty
+      Read how teams use Example Co.
+    ctas: [Get started, Read stories]
+    tags: {opening_framing: outcome, proof_type: customer_quote, hero_style: people, cta_prominence: high}
+
+  - path: /for-marketers
+    headline: Turn every demo request into a booked call
+    copy: |
+      Leads go cold while you email back and forth. Example Co books the call on the spot.
+      Booked calls rose 38% for teams that added an instant booking page.
+      Connect your forms in minutes.
+    ctas: [Get started, See how it works]
+    tags: {opening_framing: problem, proof_type: metric, hero_style: abstract, cta_prominence: high}
+
+  - path: /for-founders
+    headline: Your calendar should not be a second job
+    copy: |
+      Founders lose hours a week to scheduling. Example Co hands it back.
+      "I stopped thinking about my calendar." Alex Kim, founder at Brightpath
+      Free while you are small.
+    ctas: [Start free]
+    tags: {opening_framing: problem, proof_type: customer_quote, hero_style: people, cta_prominence: high}
+
+  - path: /for-clinics
+    headline: Fewer no-shows, fuller schedules
+    copy: |
+      Automatic reminders by text and email. Patients reschedule themselves.
+      Clinics on Example Co see 30% fewer no-shows.
+      Works with the calendar you already use.
+    ctas: [Book a demo, Pricing]
+    tags: {opening_framing: outcome, proof_type: metric, hero_style: product_ui, cta_prominence: medium}
+
+  - path: /for-sales-teams
+    headline: Book more meetings with less back and forth
+    copy: |
+      Round robin routing sends each lead to the right rep.
+      "Reps book meetings the same day now." Jordan Wu, sales director at Contoso
+      Connect your CRM in minutes.
+    ctas: [Get started, Talk to sales]
+    tags: {opening_framing: outcome, proof_type: customer_quote, hero_style: product_ui, cta_prominence: high}
+
+  - path: /integrations
+    headline: Works with the tools you already use
+    copy: |
+      Example Co connects to calendars, video calls, forms and CRMs.
+      Set up each connection in a few clicks.
+      Browse every integration below.
+    ctas: [See all integrations]
+    tags: {opening_framing: product, proof_type: none, hero_style: abstract, cta_prominence: low}
+
+  - path: /security
+    headline: Built to keep your data safe
+    copy: |
+      Data is encrypted in transit and at rest. Access is limited by role.
+      Trusted by teams at Fabrikam and Northwind.
+      Read our security overview.
+    ctas: [Contact us]
+    tags: {opening_framing: product, proof_type: logos_or_names, hero_style: text_only, cta_prominence: low}
+
+  - path: /about
+    headline: We build calm tools for busy teams
+    copy: |
+      Example Co started because scheduling a meeting took ten emails.
+      We are a small team that ships every week.
+      Come say hello.
+    ctas: [Careers]
+    tags: {opening_framing: problem, proof_type: none, hero_style: people, cta_prominence: none}
+
+  - path: /reminders
+    headline: Reminders that people actually read
+    copy: |
+      Send the right reminder at the right time by text or email.
+      "Reminders alone fixed our late arrivals." Chris Patel, clinic manager at Tailspin Health
+      Turn them on in one click.
+    ctas: [Get started, Pricing]
+    tags: {opening_framing: outcome, proof_type: customer_quote, hero_style: product_ui, cta_prominence: medium}
+
+  - path: /round-robin
+    headline: Share meetings fairly across your team
+    copy: |
+      Example Co spreads bookings across your team by rules you set.
+      Teams that use round robin answer leads 2x faster.
+      Pick a rule and go.
+    ctas: [Get started, Docs]
+    tags: {opening_framing: product, proof_type: metric, hero_style: abstract, cta_prominence: high}
+
+  - path: /booking-pages
+    headline: A booking page in five minutes
+    copy: |
+      Missed bookings cost you customers. Share one link and let people pick a time.
+      Brand it with your colors and logo.
+      Used by Lakeside Realty and Bluebird Dental.
+    ctas: [Start free, Examples]
+    tags: {opening_framing: problem, proof_type: logos_or_names, hero_style: text_only, cta_prominence: medium}
+
+  - path: /teams
+    headline: See every team calendar at a glance
+    copy: |
+      Managers see who is free, who is booked, and where the gaps are.
+      Bookings went up 22% for teams that shared calendars.
+      Invite your team in a minute.
+    ctas: [Get started]
+    tags: {opening_framing: outcome, proof_type: metric, hero_style: people, cta_prominence: low}
+
+  - path: /compare
+    headline: Example Co compared with doing it by hand
+    copy: |
+      Email threads, missed reminders and double bookings add up.
+      "We dropped three tools for one." Morgan Reyes, operations lead at Brightpath
+      See the side by side.
+    ctas: [Get started, Pricing]
+    tags: {opening_framing: problem, proof_type: customer_quote, hero_style: text_only, cta_prominence: none}

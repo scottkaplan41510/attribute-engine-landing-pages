@@ -1,0 +1,28 @@
+# Your site. Copy this folder to config/<your-site> and edit. No code changes.
+# Only used by the history pipeline (waf capture-live / capture-archive / run).
+client: example
+domain: example.com
+base_url: https://www.example.com
+primary_cta: Get started
+
+live_pages:
+  - /
+  - /pricing/
+  - /product/
+  - /customers/
+  - /for-marketers/
+  - /for-founders/
+
+archive:
+  from: "202501"
+  skip_pattern: "terms|privacy|robots|login|careers|signin|search/results|\\.(xml|txt|js|css|png|jpg)$"
+  # List pages change whenever a post is added, so they are not page versions.
+  list_pages: [/blog]
+  min_words: 50
+  # A new version needs copy under this similarity to the last version.
+  same_copy_similarity: 0.9
+
+content_pattern: "^/(articles|blog)/"
+
+# Which saved pages go into the results: live, or all to include archive copies.
+analyze: live

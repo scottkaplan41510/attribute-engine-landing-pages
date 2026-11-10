@@ -1,0 +1,11 @@
+# Illustrative data only. Effects below are planted on purpose and shown in the
+# app, so finding them again is a check that the engine works.
+seed: 7
+weeks: 12
+weekly_sessions: {marketing: 900, content: 300, page: 1500}
+base_rate: {marketing: 0.022, content: 0.008, page: 0.02}
+# Random page-to-page spread, as a multiple. 0.15 = roughly +/-15%.
+page_noise: 0.1
+planted_effects:
+  - {attribute: jev_proof_type, value: customer_quote, multiplier: 1.6}
+  - {attribute: jev_cta_prominence, value: high, multiplier: 1.4}
