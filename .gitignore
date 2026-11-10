@@ -11,3 +11,4 @@ node_modules/
 runs/
 web/public/history-shots/
 web/src/data/history.json
+build/
