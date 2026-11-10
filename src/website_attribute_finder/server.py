@@ -1,7 +1,9 @@
 """The run server. The private viewer hands out short tokens; nothing else gets in."""
 
+import base64
 import hashlib
 import hmac
+import io
 import json
 import os
 import queue
@@ -11,6 +13,7 @@ import time
 from fastapi import Depends, FastAPI, Header, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from PIL import Image
 from pydantic import BaseModel
 
 from . import live, run_store, safety
@@ -18,6 +21,11 @@ from . import live, run_store, safety
 CLIENT = os.environ.get("CLIENT", "example")
 DAILY_RUNS = int(os.environ.get("DAILY_RUNS", "20"))
 SECRET = os.environ.get("RUN_SECRET", "")
+# KEEP_RUNS=0: nothing about a run is saved. Screenshots go back inline with the
+# result and the working files are deleted when the run ends. Only the daily run
+# count is kept, as a cap on spend.
+KEEP_RUNS = os.environ.get("KEEP_RUNS", "1") != "0"
+INLINE_WIDTH = 720
 RUN_ID = "abcdef0123456789"
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
@@ -52,8 +60,22 @@ class IdeaJob(Job):
 
 
 def store_shot(run_id, name, data):
+    if not KEEP_RUNS:
+        return inline_shot(name, data)
     run_store.put(f"{run_id}/{name}", data, "image/jpeg")
     return f"{os.environ.get('PUBLIC_URL', '')}/runs/{run_id}/{name}"
+
+
+def inline_shot(name, data):
+    """The top of the page only, small, as a data URL. Full-page shots are dropped."""
+    if not name.endswith("-fold.jpg"):
+        return None
+    image = Image.open(io.BytesIO(data))
+    if image.width > INLINE_WIDTH:
+        image = image.resize((INLINE_WIDTH, round(image.height * INLINE_WIDTH / image.width)))
+    buffer = io.BytesIO()
+    image.save(buffer, "JPEG", quality=70)
+    return "data:image/jpeg;base64," + base64.b64encode(buffer.getvalue()).decode()
 
 
 def stream(job, rows, metric):
@@ -63,7 +85,8 @@ def stream(job, rows, metric):
     def work():
         try:
             result = live.execute(rows, metric, job.selected, job.custom, CLIENT, events.put, store_shot, job.words)
-            run_store.put(f"{result['run_id']}/result.json", json.dumps(result, default=str), "application/json")
+            if KEEP_RUNS:
+                run_store.put(f"{result['run_id']}/result.json", json.dumps(result, default=str), "application/json")
             events.put({"stage": "done", "result": result})
         except live.BadInput as err:
             events.put({"stage": "error", "message": str(err)})
@@ -96,6 +119,12 @@ def ideas(job: IdeaJob):
         return {"ideas": live.ideas(job.csv, job.count, job.selected, job.custom, CLIENT)}
     except (live.BadInput, ValueError) as err:
         raise HTTPException(422, str(err)) from None
+
+
+@app.get("/catalog")
+def catalog():
+    """The attributes a run can check, with the defaults marked. Not secret."""
+    return {"attributes": live.catalog(CLIENT), "min_pages": live.MIN_PAGES, "max_pages": live.MAX_PAGES}
 
 
 @app.get("/runs/{run_id}/{name}")

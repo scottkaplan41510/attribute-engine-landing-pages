@@ -71,3 +71,26 @@ def test_server_refuses_private_urls_before_spending_a_run(monkeypatch):
     response = TestClient(server.app).post("/run", json={"csv": csv})
     server.app.dependency_overrides.clear()
     assert response.status_code == 422 and "public" in response.json()["detail"]
+
+
+def test_nothing_kept_when_keep_runs_is_off(monkeypatch):
+    import io
+
+    from PIL import Image
+
+    from website_attribute_finder import run_store, server
+    monkeypatch.setattr(server, "KEEP_RUNS", False)
+    monkeypatch.setattr(run_store, "put", lambda *a: pytest.fail("nothing should be saved"))
+    buffer = io.BytesIO()
+    Image.new("RGB", (1440, 900), "white").save(buffer, "JPEG")
+    fold = server.store_shot("r" * 32, "p1-fold.jpg", buffer.getvalue())
+    assert fold.startswith("data:image/jpeg;base64,")
+    assert server.store_shot("r" * 32, "p1-full.jpg", buffer.getvalue()) is None
+
+
+def test_catalog_is_public():
+    from fastapi.testclient import TestClient
+
+    from website_attribute_finder import server
+    body = TestClient(server.app).get("/catalog").json()
+    assert body["attributes"] and body["min_pages"] == live.MIN_PAGES
