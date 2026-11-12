@@ -12,7 +12,7 @@ Everything it finds is a correlation, not a cause. Treat results as hypotheses
 to test, not answers.
 
 The stats come from its sister repo,
-[attribute-engine](https://github.com/scottkaplan41510/attribute-engine).
+[attribute-engine-ad-copy](https://github.com/scottkaplan41510/attribute-engine-ad-copy).
 
 ## Install
 
@@ -22,7 +22,7 @@ Requires Python 3.10+ and Node 20+.
 git clone https://github.com/scottkaplan41510/attribute-engine-landing-pages && cd attribute-engine-landing-pages && pip install -e .
 ```
 
-(The link works once the repo is published.) Then install the browser and the viewer:
+Then install the browser and the viewer:
 
 ```
 playwright install chromium
