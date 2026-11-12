@@ -12,14 +12,14 @@ Everything it finds is a correlation, not a cause. Treat results as hypotheses
 to test, not answers.
 
 The stats come from its sister repo,
-[attribute-engine-ad-copy](https://github.com/scottkaplan41510/attribute-engine-ad-copy).
+[attribute-engine-ad-copy](https://github.com/redavio/attribute-engine-ad-copy).
 
 ## Install
 
 Requires Python 3.10+ and Node 20+.
 
 ```
-git clone https://github.com/scottkaplan41510/attribute-engine-landing-pages && cd attribute-engine-landing-pages && pip install -e .
+git clone https://github.com/redavio/attribute-engine-landing-pages && cd attribute-engine-landing-pages && pip install -e .
 ```
 
 Then install the browser and the viewer:
@@ -56,6 +56,8 @@ can see the engine find them.
 
 3. Add keys: `cp .env.example .env`, then fill in
    - `OPENROUTER_API_KEY` from [OpenRouter](https://openrouter.ai), for Jev, which tags the copy.
+     Jev is a small model by [TypeSafe](https://typesafe.ai) that answers multiple-choice
+     questions about text.
    - `AI_GATEWAY_API_KEY` from [Vercel AI Gateway](https://vercel.com/ai-gateway), for Claude, which tags screenshots. Needs paid credits.
 4. Run `waf sample mysite`, then start the viewer as above. Your results replace
    the sample.
@@ -63,6 +65,17 @@ can see the engine find them.
 Optional: `deploy.sh` and `scripts/setup_secrets.sh` put the run server on your
 own Google Cloud project so people can paste URLs into the viewer and run them
 live. Both read your project from environment variables.
+
+## Where your data goes
+
+- Your computer opens each URL you list and screenshots it.
+- Page text goes to Jev through OpenRouter, and to Claude when you ask for
+  attribute ideas. Screenshots go to Claude through Vercel AI Gateway. Your
+  metric never leaves your machine.
+- Page history mode also reads old versions from the Internet Archive.
+- Nothing is sent to Redavio.
+- The viewer is a Next.js app, which sends anonymous usage data to Vercel by
+  default. Run `npx next telemetry disable` once to turn that off.
 
 ## Make it yours
 

@@ -20,6 +20,7 @@ from . import live, run_store, safety
 
 CLIENT = os.environ.get("CLIENT", "example")
 DAILY_RUNS = int(os.environ.get("DAILY_RUNS", "20"))
+DAILY_IDEAS = int(os.environ.get("DAILY_IDEAS", "100"))
 SECRET = os.environ.get("RUN_SECRET", "")
 # KEEP_RUNS=0: nothing about a run is saved. Screenshots go back inline with the
 # result and the working files are deleted when the run ends. Only the daily run
@@ -115,10 +116,14 @@ def run(job: Job):
 
 @app.post("/ideas", dependencies=[Depends(require_token)])
 def ideas(job: IdeaJob):
+    if not run_store.take_daily_slot(DAILY_IDEAS, kind="ideas"):
+        raise HTTPException(429, "Today's ideas limit is used up. Try again tomorrow.")
     try:
         return {"ideas": live.ideas(job.csv, job.count, job.selected, job.custom, CLIENT)}
-    except (live.BadInput, ValueError) as err:
+    except (live.BadInput, safety.UnsafeUrl, ValueError) as err:
         raise HTTPException(422, str(err)) from None
+    except Exception:
+        raise HTTPException(502, "Couldn't get ideas right now. Try again.") from None
 
 
 @app.get("/catalog")

@@ -31,9 +31,10 @@ def get(path):
     return target.read_bytes() if target.exists() else None
 
 
-def take_daily_slot(limit):
-    """Count today's runs. A cap on spend, so being off by one under load is fine."""
-    path = f"counters/{datetime.now(timezone.utc):%Y-%m-%d}.json"
+def take_daily_slot(limit, kind="runs"):
+    """Count today's runs (or idea requests). A cap on spend, so being off by one under load is fine."""
+    suffix = "" if kind == "runs" else f"-{kind}"
+    path = f"counters/{datetime.now(timezone.utc):%Y-%m-%d}{suffix}.json"
     used = json.loads(get(path) or b"0")
     if used >= limit:
         return False
