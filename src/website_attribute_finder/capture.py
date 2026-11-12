@@ -19,6 +19,19 @@ from playwright.sync_api import sync_playwright
 from . import storage
 
 VIEWPORT = {"width": 1440, "height": 900}
+# Longest stretch of a page that gets scrolled and screenshotted. Endless feeds (news,
+# social) otherwise produce screenshots tall enough to run the server out of memory.
+MAX_PAGE_HEIGHT = 8000
+
+
+def full_screenshot(page, path):
+    """The whole page, or its first MAX_PAGE_HEIGHT pixels if it's longer."""
+    height = page.evaluate("document.documentElement.scrollHeight")
+    if height <= MAX_PAGE_HEIGHT:
+        page.screenshot(path=path, full_page=True)
+    else:
+        page.screenshot(path=path, full_page=True,
+                        clip={"x": 0, "y": 0, "width": VIEWPORT["width"], "height": MAX_PAGE_HEIGHT})
 CDX = "https://web.archive.org/cdx/search/cdx"
 READ_PAGE = """() => {
   document.querySelectorAll('nav, footer, script, style, noscript').forEach(e => e.remove());
@@ -104,7 +117,7 @@ def render(page, url, client, name, cta_pattern=None):
     """Open a page, scroll so lazy content loads, screenshot, read the copy."""
     page.goto(url, wait_until="domcontentloaded", timeout=60000)
     page.wait_for_timeout(2500)
-    height = page.evaluate("document.body.scrollHeight")
+    height = min(page.evaluate("document.body.scrollHeight"), MAX_PAGE_HEIGHT)
     for y in range(0, height, 450):
         page.evaluate(f"window.scrollTo(0, {y})")
         page.wait_for_timeout(450)
@@ -112,7 +125,7 @@ def render(page, url, client, name, cta_pattern=None):
     page.wait_for_timeout(1000)
     shots = storage.run_dir(client) / "screenshots"
     page.screenshot(path=shots / f"{name}-fold.png")
-    page.screenshot(path=shots / f"{name}-full.png", full_page=True)
+    full_screenshot(page, shots / f"{name}-full.png")
     links = read_labels(page)
     raw = page.content()
     style = page.evaluate(CTA_STYLE, cta_pattern) if cta_pattern else None
@@ -278,7 +291,7 @@ def render_stored(page, stamp, original, client, name, text, tries=6):
         page.wait_for_timeout(800)
     shots = storage.run_dir(client) / "screenshots"
     page.screenshot(path=shots / f"{name}-fold.png")
-    page.screenshot(path=shots / f"{name}-full.png", full_page=True)
+    full_screenshot(page, shots / f"{name}-full.png")
     return {"text": text, "words": len(text.split()), "clickable_labels": read_labels(page),
             "fold_screenshot": f"screenshots/{name}-fold.png",
             "full_screenshot": f"screenshots/{name}-full.png"}
