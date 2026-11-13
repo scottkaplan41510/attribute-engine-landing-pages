@@ -15,10 +15,11 @@ settings:
   vision_model: anthropic/claude-sonnet-5
 
 cta_wordings:
-  get_started: "get started"
-  book_a_demo: "book a demo|request a demo"
+  get_started: "get started|start free|sign up|try "
+  book_a_demo: "book a demo|request a demo|get a demo|schedule"
   request_access: "request access|request invitation"
-cta_patterns: "get started|book a demo|request access|request invitation|request a demo|sign up|start free|try "
+  contact: "contact|talk to|send message|get in touch"
+cta_patterns: "get started|book a demo|request access|request invitation|request a demo|get a demo|sign up|start free|try |contact|talk to|send message|get in touch|schedule|buy|subscribe|download|get a quote"
 
 attributes:
   - name: word_count
@@ -222,6 +223,7 @@ attributes:
       get_started: get started
       book_a_demo: book or request a demo
       request_access: request access or an invitation
+      contact: contact us or talk to us
       other: other wording
       none: no call to action
   - name: form_on_page
