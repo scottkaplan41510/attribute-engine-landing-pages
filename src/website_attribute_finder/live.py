@@ -1,5 +1,6 @@
 """One live run: rows in, pages captured and tagged, the engine scores them."""
 
+import base64
 import csv
 import io
 import json
@@ -244,6 +245,51 @@ def ideas(text, count, selected, custom, client):
             out.append({"name": a["name"], "title": a["name"].replace("_", " ").capitalize(),
                         "question": a["question"], "type": a["type"], "options": a.get("options") or {}})
     return out
+
+
+MEASURE_TEXT_CHARS = 5000
+MEASURE_SHOT_WIDTH = 720
+
+
+def measure_pages(urls, client):
+    """Open pages and measure them, with no AI: for an assistant that tags the pages itself.
+
+    Returns each page's text, the top-of-page screenshot (a small JPEG), the code measures
+    (word count, reading grade, CTA count...) and the code-read labels (CTA wording, form,
+    colors). Nothing is kept: the working files go when it ends.
+    """
+    for url in urls:
+        safety.check_url(url)
+    config = tagging.load_config(client)
+    code = [a["name"] for a in config["attributes"] if a["computed_by"] == "code"]
+    labels = [a["name"] for a in config["attributes"] if a["computed_by"] == "label"]
+    run_id = uuid.uuid4().hex
+    try:
+        pages = capture_all([{"url": u} for u in urls], run_id, config["cta_patterns"], lambda _: None)
+        out = []
+        for page in pages:
+            try:
+                row = add_measures({**page, "render_ok": True}, run_id, config)
+            except Exception as err:
+                print(f"Measure failed for {page['url']}: {err}", flush=True)
+                row = page
+            image = Image.open(storage.run_dir(run_id) / page["fold_screenshot"]).convert("RGB")
+            if image.width > MEASURE_SHOT_WIDTH:
+                image = image.resize((MEASURE_SHOT_WIDTH, round(image.height * MEASURE_SHOT_WIDTH / image.width)))
+            buffer = io.BytesIO()
+            image.save(buffer, "JPEG", quality=65)
+            out.append({
+                "url": page["url"],
+                "headline": row.get("headline") or page.get("rendered_headline"),
+                "text": page["text"][:MEASURE_TEXT_CHARS],
+                "measures": {n: row[n] for n in code if n in row and row[n] is not None},
+                "labels": {n: row[f"jev_{n}"] for n in labels if row.get(f"jev_{n}") is not None},
+                "screenshot_jpeg_base64": base64.b64encode(buffer.getvalue()).decode(),
+            })
+        missing = [u for u in urls if u not in {p["url"] for p in pages}]
+        return {"pages": out, "could_not_open": missing}
+    finally:
+        shutil.rmtree(storage.run_dir(run_id), ignore_errors=True)
 
 
 def catalog(client):

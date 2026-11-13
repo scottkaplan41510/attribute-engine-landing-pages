@@ -21,6 +21,8 @@ from . import live, run_store, safety
 CLIENT = os.environ.get("CLIENT", "example")
 DAILY_RUNS = int(os.environ.get("DAILY_RUNS", "20"))
 DAILY_IDEAS = int(os.environ.get("DAILY_IDEAS", "100"))
+DAILY_MEASURES = int(os.environ.get("DAILY_MEASURES", "200"))
+MEASURE_MAX_PAGES = 8
 SECRET = os.environ.get("RUN_SECRET", "")
 # KEEP_RUNS=0: nothing about a run is saved. Screenshots go back inline with the
 # result and the working files are deleted when the run ends. Only the daily run
@@ -124,6 +126,30 @@ def ideas(job: IdeaJob):
         raise HTTPException(422, str(err)) from None
     except Exception:
         raise HTTPException(502, "Couldn't get ideas right now. Try again.") from None
+
+
+class MeasureJob(BaseModel):
+    urls: list[str]
+
+
+@app.post("/measure", dependencies=[Depends(require_token)])
+def measure(job: MeasureJob):
+    """Screenshots, text and code measures for up to 8 pages. No AI runs; the caller's
+    assistant tags the pages. Capped per day because a browser run costs compute."""
+    urls = [u.strip() for u in job.urls if u.strip()]
+    if not 1 <= len(urls) <= MEASURE_MAX_PAGES:
+        raise HTTPException(422, f"Send 1 to {MEASURE_MAX_PAGES} page addresses at a time.")
+    try:
+        for url in urls:
+            safety.check_url(url)
+    except safety.UnsafeUrl as err:
+        raise HTTPException(422, str(err)) from None
+    if not run_store.take_daily_slot(DAILY_MEASURES, kind="measure"):
+        raise HTTPException(429, "Today's page limit is used up. Try again tomorrow.")
+    try:
+        return live.measure_pages(urls, CLIENT)
+    except Exception:
+        raise HTTPException(502, "Couldn't open those pages right now. Try again.") from None
 
 
 @app.get("/catalog")
